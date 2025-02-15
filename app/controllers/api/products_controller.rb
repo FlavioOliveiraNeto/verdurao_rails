@@ -1,4 +1,4 @@
-class Api::ProdutosController < ApplicationController
+class Api::ProductsController < ApplicationController
     before_action :set_produto, only: [:show, :update, :destroy]
   
     def index
@@ -38,6 +38,7 @@ class Api::ProdutosController < ApplicationController
     end
   
     def produto_params
-      params.require(:produto).permit(:nome, :descricao, :preco, :estoque)
+      params.require(:produto).permit(:name, :price, :description, :stock)
+      # Adicionar image aqui ? (PESQUISAR)
     end
 end
