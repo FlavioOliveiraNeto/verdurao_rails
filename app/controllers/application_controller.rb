@@ -15,6 +15,6 @@ class ApplicationController < ActionController::API
   end
 
   def jwt_decode(token)
-    JWT.decode(token, Rails.application.secrets.secret_key_base).first
+    JWT.decode(token, Rails.application.secret_key_base).first
   end
 end

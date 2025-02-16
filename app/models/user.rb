@@ -31,6 +31,22 @@ class User < ApplicationRecord
     role == :customer
   end
 
+  def generate_password_reset_token!
+    self.reset_password_token = SecureRandom.urlsafe_base64
+    self.reset_password_sent_at = Time.now.utc
+    save!(validate: false)
+  end
+
+  def reset_password_token_valid?
+    (reset_password_sent_at + 4.hours) > Time.now.utc
+  end
+
+  def clear_password_reset!
+    self.reset_password_token = nil
+    self.reset_password_sent_at = nil
+    save!(validate: false)
+  end
+
   # Validações
   validates :name, presence: true, length: { minimum: 3 }
   validates :cpf, presence: true, uniqueness: true
@@ -42,5 +58,9 @@ class User < ApplicationRecord
 
   def cpf_must_be_valid
     errors.add(:cpf, "inválido") unless CPF.valid?(cpf)
+  end
+
+  def password_required?
+    new_record? || password.present?
   end
 end

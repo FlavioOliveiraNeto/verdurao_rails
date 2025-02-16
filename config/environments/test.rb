@@ -50,4 +50,7 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  config.secret_key_base = 'd6fe8baebfb804c5a6baf6aa5aa84d4eec5c25f30c2c9d1871dcc85ddf32b202cea005f0e13377cab301d95de3a2af9323320e4cac6ae941a969287ffe7b9e33'
+  #config.frontend_url = 'http://localhost:5173'
 end
