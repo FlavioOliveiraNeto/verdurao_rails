@@ -14,7 +14,7 @@ class PasswordResetController < ApplicationController
   end
 
   def show
-    user = User.find_by(reset_password_token: params["user"][:token])
+    user = User.find_by(reset_password_token: params[:token])
     
     if user && user.reset_password_token_valid?
       render json: { valid: true, name: user.name }, status: :ok
