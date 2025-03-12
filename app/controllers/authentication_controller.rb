@@ -5,7 +5,10 @@ class AuthenticationController < ApplicationController
     user = User.find_by(cpf: params[:cpf])
     if user&.authenticate(params[:password])
       token = jwt_encode(user_id: user.id)
-      render json: { token: token, user: user }
+      render json: {
+        user: user.as_json(except: [:password_digest, :created_at, :updated_at]),
+        token: token
+      }
     else
       render json: { error: 'CPF ou senha inválidos' }, status: :unauthorized
     end
@@ -28,6 +31,10 @@ class AuthenticationController < ApplicationController
   end
 
   def jwt_encode(payload)
-    JWT.encode(payload, Rails.application.secret_key_base)
+    JWT.encode(
+      { **payload, exp: 24.hours.from_now.to_i },
+      Rails.application.secret_key_base,
+      'HS256'
+    )
   end
 end

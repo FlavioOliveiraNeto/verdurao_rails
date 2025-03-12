@@ -47,14 +47,31 @@ class User < ApplicationRecord
     save!(validate: false)
   end
 
+  # Associações
+  has_many :orders, dependent: :destroy
+  has_many :users_addresses, dependent: :destroy
+  has_many :addresses, through: :users_addresses
+
   # Validações
-  validates :name, presence: true, length: { minimum: 3 }
-  validates :cpf, presence: true, uniqueness: true
-  validates :email, presence: true, uniqueness: true
+  validates :name, :email, :cpf, :telephone, presence: true
+  validates :email, uniqueness: true
+  validates :cpf, uniqueness: true, length: { is: 11 }
   validates :password, presence: true, length: { minimum: 6 }
   validate :cpf_must_be_valid
 
+  # Callback para remover formatação antes da validação
+  before_validation :normalize_telephone,
+
   private
+
+  def default_address
+    addresses.joins(:users_addresses).find_by(users_addresses: { default: 1 })
+  end
+
+  def normalize_telephone
+    self.telephone = telephone.gsub(/[^\d]/, '') if telephone.present?
+    self.telephone = "(#{telephone[0..1]}) #{telephone[2..6]}-#{telephone[7..10]}" rescue nil
+  end
 
   def cpf_must_be_valid
     errors.add(:cpf, "inválido") unless CPF.valid?(cpf)

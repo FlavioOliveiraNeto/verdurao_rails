@@ -1,7 +1,13 @@
 Rails.application.routes.draw do
   namespace :api do
+    resources :orders, only: [:index, :show, :create, :update, :destroy]
     resources :products, only: [:index, :show, :create, :update, :destroy]
     resources :users, only: [:index, :show, :create, :update, :destroy]
+    resources :addresses, only: [:create, :index]
+
+    namespace :users do
+      resources :addresses, only: [:update, :destroy]
+    end
   end
 
   # Rotas de autenticação
